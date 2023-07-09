@@ -10,21 +10,29 @@ public class User {
     private String username;
     private String email;
     private String password;
-    public Object getUsername() {
-        return null;
-    }
-    public Object getPassword() {
-        return null;
-    }
-    public Object getEmail() {
-        return null;
-    }
-    public void setUsername(Object username2) {
-    }
-    public void setPassword(Object password2) {
-    }
-    public void setEmail(Object email2) {
+
+    public User(){}
+
+    public String getUsername() {
+        return this.username;
     }
 
+    public String getPassword() {
+        return this.password;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setUsername(String username2) {
+        this.username = username2;
+    }
+    public void setPassword(String password2) {
+        this.password = password2;
+    }
+    public void setEmail(String email2) {
+        this.email = email2;
+    }
     
 }

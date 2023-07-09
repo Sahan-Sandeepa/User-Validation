@@ -3,10 +3,12 @@ package dev.sahan.authentication;
 import dev.sahan.authentication.User;
 import dev.sahan.authentication.UserRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,6 +24,15 @@ public class UserController {
     @Autowired
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @GetMapping("/getAll")
+    public List<User> getAllUsers() {
+        // Retrieve all users from the database
+        List<User> users = userRepository.findAll();
+
+        // Return the list of users
+        return users;
     }
 
     @PostMapping("/register")
@@ -58,15 +69,10 @@ public class UserController {
     @PutMapping("/edit/{id}")
     public User editUser(@PathVariable("id") String id, @RequestBody User user) {
         // Find the user by id
-        Optional<User> optionalUser = userRepository.findById(id);
-
-        // Check if the user exists
-        if (!optionalUser.isPresent()) {
-            throw new RuntimeException("User not found");
-        }
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         // Update the user details
-        User existingUser = optionalUser.get();
         existingUser.setUsername(user.getUsername());
         existingUser.setPassword(user.getPassword());
         existingUser.setEmail(user.getEmail());
@@ -81,15 +87,11 @@ public class UserController {
     @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable("id") String id) {
         // Find the user by id
-        Optional<User> optionalUser = userRepository.findById(id);
-
-        // Check if the user exists
-        if (!optionalUser.isPresent()) {
-            throw new RuntimeException("User not found");
-        }
+        User existingUser = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
         // Delete the user from the database
-        userRepository.delete(optionalUser.get());
+        userRepository.delete(existingUser);
     }
-}
 
+}
