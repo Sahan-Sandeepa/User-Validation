@@ -45,6 +45,9 @@ public class UserController {
             throw new RuntimeException("Email already exists");
         }
 
+        // Encode the user's password
+        user.setPassword(user.getPassword());
+
         // Save the user to the database
         User savedUser = userRepository.save(user);
 
