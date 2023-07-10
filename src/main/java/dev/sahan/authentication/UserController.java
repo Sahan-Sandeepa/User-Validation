@@ -1,12 +1,13 @@
 package dev.sahan.authentication;
 
-import dev.sahan.authentication.User;
-import dev.sahan.authentication.UserRepository;
-
+import jakarta.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -36,24 +37,42 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public User registerUser(@RequestBody User user) {
-        // Check if the user already exists in the database
-        if (userRepository.existsByUsername(user.getUsername())) {
-            throw new RuntimeException("Username already exists");
+public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult bindingResult) {
+    // Check for validation errors
+    if (bindingResult.hasErrors()) {
+        List<FieldError> errors = bindingResult.getFieldErrors();
+
+        // Construct the error response
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setMessage("Validation failed");
+        List<String> errorMessages = new ArrayList<>();
+        for (FieldError error : errors) {
+            errorMessages.add(error.getDefaultMessage());
         }
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
+        errorResponse.setErrors(errorMessages);
 
-        // Encode the user's password
-        user.setPassword(user.getPassword());
-
-        // Save the user to the database
-        User savedUser = userRepository.save(user);
-
-        // Return the saved user
-        return savedUser;
+        // Return the error response with the appropriate HTTP status code
+        return ResponseEntity.badRequest().body(errorResponse);
     }
+
+    // Check if the user already exists in the database
+    if (userRepository.existsByUsername(user.getUsername())) {
+        throw new RuntimeException("Username already exists");
+    }
+    if (userRepository.existsByEmail(user.getEmail())) {
+        throw new RuntimeException("Email already exists");
+    }
+
+    // Encode the user's password
+    user.setPassword(user.getPassword());
+
+    // Save the user to the database
+    User savedUser = userRepository.save(user);
+
+    // Return the saved user
+    return ResponseEntity.ok(savedUser);
+}
 
     @PostMapping("/login")
     public User loginUser(@RequestBody User user) {
