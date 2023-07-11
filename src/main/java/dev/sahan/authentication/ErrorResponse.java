@@ -7,18 +7,30 @@ public class ErrorResponse {
     private String message;
     private List<String> errors;
 
-    public ErrorResponse(){}
+    public ErrorResponse() {}
 
-    public void setStatus(int value) {
-        this.status = value;
-    }
-    public void setMessage(String string) {
-        this.message = string;
-    }
-    public void setErrors(List<String> errorMessages) {
-        this.errors = errorMessages;
+    public int getStatus() {
+        return status;
     }
 
-    // Constructors, getters, and setters
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public List<String> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(List<String> errors) {
+        this.errors = errors;
+    }
 }
 

@@ -3,11 +3,7 @@ package dev.sahan.authentication;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface UserRepository extends MongoRepository<User, String> {
-
-    boolean existsByUsername(Object username);
-    // Additional query methods can be added here
-
-    boolean existsByEmail(Object email);
-
-    User findByUsernameAndPassword(Object username, Object password);
+    boolean existsByUsername(String username);
+    boolean existsByEmail(String email);
+    User findByUsernameAndPassword(String username, String password);
 }

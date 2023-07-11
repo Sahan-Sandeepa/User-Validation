@@ -1,15 +1,15 @@
 package dev.sahan.authentication;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-
 @Document(collection = "users")
+@Validated
 public class User {
     @Id
     private String id;
@@ -23,8 +23,12 @@ public class User {
 
     @NotBlank(message = "Password is required")
     private String password;
+    
+    private final PasswordEncoder passwordEncoder;
 
-    public User(){}
+    public User(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public String getUsername() {
         return this.username;
@@ -38,19 +42,15 @@ public class User {
         return this.email;
     }
 
-    public void setUsername(String username2) {
-        this.username = username2;
+    public void setUsername(String username) {
+        this.username = username;
     }
-    
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     public void setPassword(String password) {
         this.password = passwordEncoder.encode(password);
     }
-    public void setEmail(String email2) {
-        this.email = email2;
+
+    public void setEmail(String email) {
+        this.email = email;
     }
-    
-    
 }
